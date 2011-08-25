@@ -56,17 +56,6 @@ or::
   $ cp NetMonitor\@zdyb.tk ~/.local/share/gnome-shell/extensions/
   
   
-Have fun!
-=========
-
-Go ahead and try::
-
-  $ hg clone http://bitbucket.org/ojo/gnome-shell-extension-netmonitor/
-
-
-Have fun!
-
-
 License
 =======
 
