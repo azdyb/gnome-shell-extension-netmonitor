@@ -1,0 +1,79 @@
+What is NetMonitor?
+===================
+
+NetMonitor is a humble Netspeed_ replacement for gnome-shell_.
+
+.. _Netspeed: http://projects.gnome.org/netspeed/
+.. _gnome-shell: https://live.gnome.org/GnomeShell
+
+What it looks like?
+===================
+
+Everybody loves screenshots, right?
+
+.. image:: http://img198.imageshack.us/img198/5122/netmonitor1.png
+   :alt: Normal view
+
+.. image:: http://img135.imageshack.us/img135/214/netmonitor5.png
+   :alt: Two connected devices
+
+.. image:: http://img217.imageshack.us/img217/6286/netmonitor4.png
+   :alt: Hidden device
+
+
+Disclaimer
+==========
+
+As I couldn't find any real documentation for writing gnome-shell extensions, I based my code on better or worse snippets and tutorials found on internet. Some of the sources are mentioned below:
+
+* `gnome-shell-extensions <http://git.gnome.org/browse/gnome-shell-extensions/>`_
+* `Musings of an OS plumber <http://blog.fpmurphy.com/tag/gnome-shell>`_
+* `gnome-shell-system-monitor-applet <https://github.com/paradoxxxzero/gnome-shell-system-monitor-applet>`_
+
+
+How it works?
+=============
+
+The extension connects to NetworkManager via dbus and gets list of available network devices. Then it parses /proc/net/dev file for interfaces' statistics.
+
+I should have used imports.gi.NetworkManager instead of writing all the code myself, but I've found the module too late (did I mention lack of documentation?). Moreover I should have used imports.gi.GTop instead of parsing /proc/net/dev/, but I don't believe it's supported in gnome-shell 3.0.
+
+
+Instalation
+===========
+
+In order to install gsettings schema, copy org.gnome.shell.extensions.net-monitor.gschema.xml file to /usr/share/glib-2.0/schemas and invoke glib-compile-schemas on that direcory. Note that you need to be root or use sudo to do that::
+  
+  # cp org.gnome.shell.extensions.net-monitor.gschema.xml /usr/share/glib-2.0/schemas
+  # glib-compile-schemas /usr/share/glib-2.0/schemas
+  
+The NetMonitor@zdyb.tk directory should be copied to /usr/share/gnome-shell/extensions or ~/.local/share/gnome-shell/extensions/::
+
+  # cp NetMonitor\@zdyb.tk /usr/share/gnome-shell/extensions
+  
+or::
+
+  $ cp NetMonitor\@zdyb.tk ~/.local/share/gnome-shell/extensions/
+  
+  
+Have fun!
+=========
+
+Go ahead and try::
+
+  $ hg clone http://bitbucket.org/ojo/gnome-shell-extension-netmonitor/
+
+
+Have fun!
+
+
+License
+=======
+
+Copyright 2011 Aleksander Zdyb
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program.  If not, see http://www.gnu.org/licenses/.

@@ -1,0 +1,9 @@
+<schemalist gettext-domain="gnome-shell-extensions">
+  <schema id="org.gnome.shell.extensions.net-monitor" path="/org/gnome/shell/extensions/net-monitor/">
+    <key name="hidden-interfaces" type="as">
+      <default>[]</default>
+      <summary>Hidden iterfaces</summary>
+      <description>A list of interfaces which won't be shown on panel even if they're connected.</description>
+    </key>
+  </schema>
+</schemalist>

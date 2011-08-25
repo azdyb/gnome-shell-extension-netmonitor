@@ -1,0 +1,14 @@
+.bandwidth-label {
+    font-size: x-small;
+    padding: 0.3em 0.2em; /* Somehow it works to center label vertically */
+    padding-right: 0.6em;
+    min-width: 4.5em;
+}
+
+.bandwidth-label:last-child {
+    padding-right: 0.2em;
+}
+
+.section-title {
+    font-size: x-small;
+}
