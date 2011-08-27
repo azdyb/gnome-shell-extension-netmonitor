@@ -215,8 +215,8 @@ DBus.proxifyPrototype(NetworkManagerDevice.prototype, NetworkManagerDeviceInterf
 /** Holds almost all information about network interface.
  *  It also builds and updates GUI
  */
-function NetInterface(if_name, dev_type) {
-  this._init(if_name, dev_type);
+function NetInterface(if_name, ip, dev_type) {
+  this._init(if_name, ip, dev_type);
 };
 
 NetInterface.prototype = {
@@ -224,9 +224,10 @@ NetInterface.prototype = {
   is_hidden: false,       /* Should show on panel? */
   onoff_menu: null, /* Switcher toggling "show" attribute */
   
-  _init: function(if_name, dev_type) {
+  _init: function(if_name, ip, dev_type) {
     this.if_name = if_name;
     this.dev_type = dev_type;
+    this.ip4 = ip;
     
     // TODO: Add 3G, Bluetooth and so on...
     let icon_name;
@@ -384,9 +385,9 @@ NetSpeed.prototype = {
  
     AddInterface: function(dev, net_dev) {
         this.active_interfaces[dev] = net_dev;
-        let if_name = dev.properties["Interface"];
+        let if_name = net_dev.if_name
         
-        net_dev.GetBox().set_tooltip_text(if_name)
+        net_dev.GetBox().set_tooltip_text(if_name + " (" + net_dev.ip4 + ")")
         
         net_dev.is_hidden = (settings.get_strv("hidden-interfaces").indexOf(if_name) >= 0);
         net_dev.onoff_menu = new PopupMenu.PopupSwitchMenuItem(if_name, !net_dev.is_hidden);
@@ -458,9 +459,14 @@ NetSpeed.prototype = {
     device_state_changed: function(sender, new_state, old_state, reason) {
         let net_dev = this.active_interfaces[sender];
         let if_name = sender.properties["Interface"];
+        let ip_uint32 = sender.properties["Ip4Address"];
+        let ip = ip_uint32 & 0xFF;
+        
+        for (let i=1; i<4; ++i)
+            ip += ("." + (ip_uint32 >> i*8 & 0xFF));
         
         if (!net_dev) {
-            net_dev = new NetInterface(if_name, sender.properties["DeviceType"]);
+            net_dev = new NetInterface(if_name, ip, sender.properties["DeviceType"]);
             this.AddInterface(sender, net_dev);
         }
         
