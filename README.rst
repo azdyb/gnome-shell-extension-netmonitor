@@ -34,9 +34,9 @@ As I couldn't find any real documentation for writing gnome-shell extensions, I 
 How it works?
 =============
 
-The extension connects to NetworkManager via dbus and gets list of available network devices. Then it parses /proc/net/dev file for interfaces' statistics.
+The extension lists available network devices using NMClient and then parses /proc/net/dev file for interfaces' statistics.
 
-I should have used imports.gi.NetworkManager instead of writing all the code myself, but I've found the module too late (did I mention lack of documentation?). Moreover I should have used imports.gi.GTop instead of parsing /proc/net/dev/, but I don't believe it's supported in gnome-shell 3.0.
+I should have used imports.gi.GTop instead of parsing /proc/net/dev/, but I don't believe it's supported in gnome-shell 3.0.
 
 
 Instalation
