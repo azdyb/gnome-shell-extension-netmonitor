@@ -56,19 +56,21 @@ NetInterface.prototype = {
   nmdevice: null,
   if_name: "",
   ip4: null,
+  device_type: NetworkManager.DeviceType.UNKNOWN,
+  signal_strength: 0,
   
   _init: function(nmdevice) {
     this.nmdevice = nmdevice;
-    
+    this.device_type = this.nmdevice.get_device_type();
     // TODO: Add 3G, Bluetooth and so on...
     let icon_name;
     
-    switch(this.nmdevice.get_device_type()) {
+    switch(this.device_type) {
       case NetworkManager.DeviceType.ETHERNET:
         icon_name = "network-wired";
         break;
       case NetworkManager.DeviceType.WIFI:
-        icon_name = "network-wireless";
+        icon_name = "network-wireless-connected";
         break;
       default:
         icon_name = "network-wired";
@@ -76,12 +78,10 @@ NetInterface.prototype = {
     };
     
     this.icon = new St.Icon({
-      icon_type: St.IconType.FULLCOLOR,
-      icon_size: Main.panel.button.get_child().height,
+      icon_type: St.IconType.SYMBOLIC,
+      style_class: "popup-menu-icon",
       icon_name: icon_name
     });
-    
-    this.icon.add_effect_with_name("grayscale", new Clutter.DesaturateEffect({ factor: 1 }));
     
     this.box = new St.BoxLayout();
     this.box.add_actor(this.icon);
@@ -122,7 +122,23 @@ NetInterface.prototype = {
       this.ip4 = addresses.join(", ");
     } else
       this.ip4 = null;
-      
+    
+    if (this.device_type == NetworkManager.DeviceType.WIFI) {
+      let ap = this.nmdevice.get_active_access_point();
+      if (ap) {
+        let strength = ap.get_strength();
+        
+        if (strength > 80) strength = "excellent";
+        else if (strength > 55) strength = "good";
+        else if (strength > 30) strength = "ok";
+        else if (strength > 5) strength = "weak";
+        else strength = "none";
+        
+        if (this.signal_strength != strength) 
+          this.icon.icon_name = "network-wireless-signal-" + strength;      
+        this.signal_strength = strength;
+      }
+    }
     this.box.set_tooltip_text(this.GetTooltip())
   },
   
@@ -214,8 +230,8 @@ NetSpeed.prototype = {
     PanelMenu.Button.prototype._init.call(this, 0.0);
     
     this.ext_icon = new St.Icon({
-      icon_type: St.IconType.FULLCOLOR,
-      icon_size: Main.panel.button.get_child().height,
+      icon_type: St.IconType.SYMBOLIC,
+      style_class: "popup-menu-icon",
       icon_name: "network-offline"
     });
     
