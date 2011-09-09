@@ -11,14 +11,14 @@ What it looks like?
 
 Everybody loves screenshots, right?
 
-.. image:: http://img198.imageshack.us/img198/5122/netmonitor1.png
+.. image:: http://img197.imageshack.us/img197/883/netmonitor.png
    :alt: Normal view
 
-.. image:: http://img135.imageshack.us/img135/214/netmonitor5.png
-   :alt: Two connected devices
+.. image:: http://img339.imageshack.us/img339/4089/netmonitormenu.png
+   :alt: Menu
 
-.. image:: http://img217.imageshack.us/img217/6286/netmonitor4.png
-   :alt: Hidden device
+.. image:: http://img225.imageshack.us/img225/7882/netmonitortooltip.png
+   :alt: Tooltip
 
 
 Disclaimer
