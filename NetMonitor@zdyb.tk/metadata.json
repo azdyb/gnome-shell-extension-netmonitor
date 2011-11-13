@@ -1,1 +1,7 @@
-{ "shell-version": ["3.0.2"], "uuid": "NetMonitor@zdyb.tk", "name": "NetMonitor", "description": "Shows current bandwidth on network interfaces." }
+{
+    "shell-version": ["3.2"],
+    "uuid": "NetMonitor@zdyb.tk",
+    "name": "NetMonitor",
+    "description": "Shows current bandwidth on network interfaces.",
+    "url": "http://github.com/ojo/gnome-shell-extension-netmonitor"
+}

@@ -29,6 +29,7 @@ const Gettext = imports.gettext;
 const MessageTray = imports.ui.messageTray;
 const Tweener = imports.tweener.tweener;
 const Clutter = imports.gi.Clutter;
+const GTop = imports.gi.GTop;
 
 const NetworkManager = imports.gi.NetworkManager;
 const NMClient = imports.gi.NMClient;
@@ -41,10 +42,16 @@ const GSETTINGS_SCHEMA = 'org.gnome.shell.extensions.net-monitor';
 const settings = new Gio.Settings({ schema: GSETTINGS_SCHEMA });
 
 
+let net_speed;
+
+
 /** Holds almost all information about network interface.
  *  It also builds and updates GUI
  */
 
+/**
+ * @todo Move it to separate file
+ */
 function NetInterface(nmdevice) {
   this._init(nmdevice);
 };
@@ -56,11 +63,13 @@ NetInterface.prototype = {
   nmdevice: null,
   if_name: "",
   ip4: null,
+  netload: null,
   device_type: NetworkManager.DeviceType.UNKNOWN,
   signal_strength: 0,
   
   _init: function(nmdevice) {
     this.nmdevice = nmdevice;
+    this.netload = new GTop.glibtop_netload();
     this.device_type = this.nmdevice.get_device_type();
     // TODO: Add 3G, Bluetooth and so on...
     let icon_name;
@@ -238,8 +247,9 @@ NetSpeed.prototype = {
     this.main_box = new St.BoxLayout();
     this.main_box.add_actor(this.ext_icon);
 
-    this.actor.set_child(this.main_box);
+    this.actor.add_actor(this.main_box);
     Main.panel._rightBox.insert_actor(this.actor, 0);
+    Main.panel._menus.addMenu(this.menu)
 
     this.menu_section_interfaces = new PopupMenu.PopupMenuSection(_("Show interfaces"));
     
@@ -251,10 +261,8 @@ NetSpeed.prototype = {
     
     this.menu_section_settings = new PopupMenu.PopupMenuSection("Settings");
     
-    this.menu_section_settings.addAction(_("Network Settings"), function() {
-      let app = Shell.AppSystem.get_default().get_app('gnome-network-panel.desktop');
-      app.activate(-1);
-    });
+    
+    this.menu_section_settings.addSettingsAction(_("Network Settings"), "gnome-network-panel.desktop");
     
     this.menu.addMenuItem(this.menu_section_settings);
     
@@ -304,20 +312,30 @@ NetSpeed.prototype = {
   },
 
   /// Fired every UPDATE_INTERVAL milliseconds
-  /// Gets current time, parses content of /proc/net/dev
+  /// Gets current time and netload statistics
   /// and updates all NetInterface instances.
   on_timeout: function() {
     let probe_time = GLib.get_monotonic_time();
     let net_dev = {};
-    let proc_net_dev = Shell.get_file_contents_utf8_sync('/proc/net/dev').split("\n");
-    for(let i=2; i<proc_net_dev.length-1; ++i) {
-      let iface_params = proc_net_dev[i].replace(/ +/g, " ").split(" ");
-      let if_name = iface_params[1].replace(/:/, "");
-      net_dev[if_name] = {
-        "bytes_in": parseInt(iface_params[2]),
-        "bytes_out": parseInt(iface_params[10])
-      };
+    
+    for each (let dev in this.active_interfaces) {
+      let if_name = dev.if_name;
+      try {
+        GTop.glibtop_get_netload(dev.netload, if_name);
+        /**
+         * @todo Don't create a hash, but make NetInterface
+         * use its own netload structure
+         */
+        net_dev[if_name] = {
+          "bytes_in": dev.netload.bytes_in,
+          "bytes_out": dev.netload.bytes_out
+        }
+      } catch (err) {
+        //global.log("NetMonitor::Error: " + err);
+      }
+      
     }
+    
     for each (let iface in this.active_interfaces)
       iface.Update(net_dev, probe_time);
     return true;
@@ -391,11 +409,20 @@ NetSpeed.prototype = {
   }
 };
  
-function main(extensionMeta) {
+
+function enable() {
+  net_speed.actor.show();
+}
+
+function disable() {
+  net_speed.actor.hide();
+}
+
+function init(extensionMeta) {
     let userExtensionLocalePath = extensionMeta.path + '/locale';
     Gettext.bindtextdomain("NetMonitor", userExtensionLocalePath);
     Gettext.textdomain("NetMonitor");
   
-    let net_speed = new NetSpeed();
+    net_speed = new NetSpeed();
     net_speed.Run();
 }
