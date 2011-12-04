@@ -19,7 +19,6 @@ const St = imports.gi.St;
 const Mainloop = imports.mainloop;
 const Main = imports.ui.main;
 const Lang = imports.lang;
-const Gio = imports.gi.Gio;
 const PopupMenu = imports.ui.popupMenu;
 const PanelMenu = imports.ui.panelMenu;
 const Gettext = imports.gettext;
@@ -35,8 +34,6 @@ const NetInterface = NetMonitor.netinterface.NetInterface;
 const _ = Gettext.gettext;
 
 const UPDATE_INTERVAL = 2;
-const GSETTINGS_SCHEMA = "org.gnome.shell.extensions.net-monitor";
-const HIDDEN_INTERFACES_SETTING = "hidden-interfaces";
 
 
 function NetSpeed(extensionMeta) {
@@ -54,7 +51,6 @@ NetSpeed.prototype = {
         PanelMenu.Button.prototype._init.call(this, 0.0);
         
         this.extensionMeta = extensionMeta;
-        this.settings = new Gio.Settings({ schema: GSETTINGS_SCHEMA });
         
         this.build_ui();
         
@@ -125,7 +121,6 @@ NetSpeed.prototype = {
         ind.actor.connect("hide", Lang.bind(this, this.indicator_visibility_changed, ind));
         ind.menu.connect("toggled", Lang.bind(this, this.indicator_menu_toggled, ind));
         
-        ind.set_hidden(this.settings.get_strv(HIDDEN_INTERFACES_SETTING).indexOf(ind.net_interface.get_ifname()) >= 0);
         this.main_box.add(ind.actor);
         this.menu_section_interfaces.addMenuItem(ind.menu);
         this.indicators.push(ind);
@@ -155,18 +150,6 @@ NetSpeed.prototype = {
     
     indicator_menu_toggled: function(menu, state, indicator) {
         indicator.set_hidden(!state);
-        
-        let ifname = indicator.net_interface.get_ifname();
-        let list = this.settings.get_strv(HIDDEN_INTERFACES_SETTING);
-        let i = list.indexOf(ifname);
-        
-        if (!state && (i < 0)) {
-            list.push(ifname);
-        } else if (state && (i >= 0)) {
-            list.splice(i, 1);
-        }
-        
-        this.settings.set_strv(HIDDEN_INTERFACES_SETTING, list);
     }
 };
 
