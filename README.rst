@@ -36,11 +36,6 @@ The extension lists available network devices using NMClient and uses GTop to ge
 
 Instalation
 ===========
-
-In order to install gsettings schema, copy org.gnome.shell.extensions.net-monitor.gschema.xml file to /usr/share/glib-2.0/schemas and invoke glib-compile-schemas on that direcory. Note that you need to be root or use sudo to do that::
-  
-  # cp org.gnome.shell.extensions.net-monitor.gschema.xml /usr/share/glib-2.0/schemas
-  # glib-compile-schemas /usr/share/glib-2.0/schemas
   
 The NetMonitor@zdyb.tk directory should be copied to /usr/share/gnome-shell/extensions or ~/.local/share/gnome-shell/extensions/::
 
