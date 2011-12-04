@@ -11,14 +11,11 @@ What it looks like?
 
 Everybody loves screenshots, right?
 
-.. image:: http://img197.imageshack.us/img197/883/netmonitor.png
+.. image:: http://img848.imageshack.us/img848/883/netmonitor.png
    :alt: Normal view
 
-.. image:: http://img339.imageshack.us/img339/4089/netmonitormenu.png
+.. image:: http://img11.imageshack.us/img11/4089/netmonitormenu.png
    :alt: Menu
-
-.. image:: http://img225.imageshack.us/img225/7882/netmonitortooltip.png
-   :alt: Tooltip
 
 
 Disclaimer
@@ -34,9 +31,7 @@ As I couldn't find any real documentation for writing gnome-shell extensions, I 
 How it works?
 =============
 
-The extension lists available network devices using NMClient and then parses /proc/net/dev file for interfaces' statistics.
-
-I should have used imports.gi.GTop instead of parsing /proc/net/dev/, but I don't believe it's supported in gnome-shell 3.0.
+The extension lists available network devices using NMClient and uses GTop to get devices' statistics.
 
 
 Instalation
