@@ -39,11 +39,11 @@ Instalation
   
 The NetMonitor@zdyb.tk directory should be copied to /usr/share/gnome-shell/extensions or ~/.local/share/gnome-shell/extensions/::
 
-  # cp NetMonitor\@zdyb.tk /usr/share/gnome-shell/extensions
+  # cp -r NetMonitor\@zdyb.tk /usr/share/gnome-shell/extensions
   
 or::
 
-  $ cp NetMonitor\@zdyb.tk ~/.local/share/gnome-shell/extensions/
+  $ cp -r NetMonitor\@zdyb.tk ~/.local/share/gnome-shell/extensions/
   
   
 License
