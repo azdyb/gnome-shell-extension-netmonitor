@@ -121,6 +121,7 @@ NetSpeed.prototype = {
         ind.actor.connect("hide", Lang.bind(this, this.indicator_visibility_changed, ind));
         ind.menu.connect("toggled", Lang.bind(this, this.indicator_menu_toggled, ind));
         
+        ind.set_hidden(false);
         this.main_box.add(ind.actor);
         this.menu_section_interfaces.addMenuItem(ind.menu);
         this.indicators.push(ind);
